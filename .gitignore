@@ -1,0 +1,11 @@
+# Archivos generados o propios de cada PC: no se suben al repositorio
+*.iml
+.gradle
+/.idea/
+/local.properties
+local.properties
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx

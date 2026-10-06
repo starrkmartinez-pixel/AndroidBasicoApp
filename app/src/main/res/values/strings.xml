@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">AndroidBasicoApp</string>
+
+    <!-- ===== Pantalla principal ===== -->
+    <string name="titulo_menu">🏫 AndroidBasicoApp</string>
+    <string name="subtitulo_menu">Guía de la sede · Intents implícitos y explícitos</string>
+    <string name="leyenda_colores">🟢 Acción segura   🟡 Pedirá un permiso   🔵 Pantalla de la app</string>
+    <string name="seccion_implicitos">🌐 Abrir otras apps (intents implícitos)</string>
+    <string name="seccion_explicitos">🧭 Pantallas de la app (intents explícitos)</string>
+    <string name="seccion_formulario">📝 Inscripción a un taller</string>
+
+    <!-- ===== Botones de los intents implícitos ===== -->
+    <string name="btn_ubicacion">📍 Obtener mi ubicación</string>
+    <string name="btn_mapa">🗺️ Ver en Google Maps</string>
+    <string name="btn_web">🌐 Abrir sitio web de la sede</string>
+    <string name="btn_llamar">📞 Llamar a la sede</string>
+    <string name="btn_correo">✉️ Enviar un correo</string>
+    <string name="btn_camara">📸 Tomar una foto</string>
+    <string name="desc_foto">Foto tomada con la cámara</string>
+
+    <!-- ===== Botones y campos de los intents explícitos ===== -->
+    <string name="btn_detalle">📚 Ver detalle de la Biblioteca</string>
+    <string name="btn_config">⚙️ Ajustes</string>
+    <string name="hint_nombre">Nombre</string>
+    <string name="hint_correo">Correo</string>
+    <string name="btn_enviar">✅ Enviar inscripción</string>
+    <string name="txt_estado_inicial">Completa tus datos y envía la inscripción</string>
+
+    <!-- ===== Ubicación ===== -->
+    <string name="txt_ubicacion_inicial">📍 Ubicación aún no obtenida</string>
+    <string name="txt_buscando_ubicacion">⏳ Buscando ubicación…</string>
+    <string name="txt_ubicacion">📍 Lat: %1$.5f | Lng: %2$.5f</string>
+    <string name="txt_ubicacion_no_encontrada">⚠️ No se pudo obtener la ubicación (intenta cerca de una ventana)</string>
+    <string name="txt_sin_permiso_ubicacion">🚫 Sin permiso de ubicación: el mapa mostrará la sede</string>
+    <string name="msg_activa_gps">⚠️ Activa la ubicación del teléfono</string>
+    <string name="msg_mapa_sede">Sin ubicación: se muestra la sede</string>
+
+    <!-- ===== Correo ===== -->
+    <string name="correo_asunto">Consulta desde AndroidBasicoApp</string>
+    <string name="correo_cuerpo">Hola, quisiera más información sobre los talleres de la sede.</string>
+
+    <!-- ===== Cámara ===== -->
+    <string name="msg_foto_guardada">✅ Foto guardada en Imágenes/AndroidBasicoApp</string>
+    <string name="msg_foto_cancelada">Foto cancelada</string>
+    <string name="msg_sin_permiso_camara">🚫 Sin permiso de cámara no se puede tomar la foto</string>
+
+    <!-- ===== Errores (validaciones) ===== -->
+    <string name="error_sin_mapas">No hay una app de mapas instalada</string>
+    <string name="error_sin_navegador">No hay un navegador instalado</string>
+    <string name="error_sin_telefono">Este dispositivo no puede hacer llamadas</string>
+    <string name="error_sin_correo">No hay una app de correo configurada</string>
+    <string name="error_sin_camara">No hay una app de cámara</string>
+    <string name="error_preparar_foto">No se pudo preparar el archivo de la foto</string>
+    <string name="error_vista_previa">No se pudo mostrar la vista previa</string>
+</resources>

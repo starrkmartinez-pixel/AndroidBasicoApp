@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema de la app. NoActionBar: quita la barra con el nombre de la app. -->
+    <style name="Theme.AndroidBasicoApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/azul_sede</item>
+        <item name="colorPrimaryVariant">@color/azul_oscuro</item>
+        <item name="colorOnPrimary">@color/blanco</item>
+        <item name="colorSecondary">@color/verde</item>
+        <item name="colorOnSecondary">@color/blanco</item>
+        <item name="android:windowBackground">@color/fondo</item>
+    </style>
+
+    <!-- Estilo base de los botones (AppCompatButton): los atributos comunes en un solo lugar -->
+    <style name="Boton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/espacio_boton</item>
+        <item name="android:padding">@dimen/padding_boton</item>
+        <item name="android:textSize">@dimen/texto_boton</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/blanco</item>
+        <item name="android:background">@drawable/fondo_boton</item>
+    </style>
+
+    <!-- Variantes por significado (el color le dice al usuario qué esperar) -->
+    <style name="Boton.Verde">
+        <item name="backgroundTint">@color/verde</item>
+    </style>
+    <style name="Boton.Amarillo">
+        <item name="backgroundTint">@color/amarillo</item>
+        <item name="android:textColor">@color/texto_oscuro</item>
+    </style>
+    <style name="Boton.Rojo">
+        <item name="backgroundTint">@color/rojo</item>
+    </style>
+    <style name="Boton.Azul">
+        <item name="backgroundTint">@color/azul</item>
+    </style>
+    <style name="Boton.Gris">
+        <item name="backgroundTint">@color/gris</item>
+    </style>
+
+    <!-- Título de cada sección de la pantalla -->
+    <style name="TituloSeccion">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/espacio_seccion</item>
+        <item name="android:layout_marginBottom">@dimen/espacio_chico</item>
+        <item name="android:textSize">@dimen/texto_seccion</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/texto_oscuro</item>
+    </style>
+
+    <!-- Texto de resultado dentro de una "tarjeta" blanca -->
+    <style name="TextoTarjeta">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/espacio_boton</item>
+        <item name="android:padding">@dimen/padding_tarjeta</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/texto_normal</item>
+        <item name="android:textColor">@color/texto_oscuro</item>
+        <item name="android:background">@drawable/fondo_tarjeta</item>
+    </style>
+</resources>

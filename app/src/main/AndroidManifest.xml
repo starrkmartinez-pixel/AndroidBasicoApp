@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ===== PERMISOS ===== -->
+    <!-- Cámara: se pide en tiempo de ejecución antes de abrir la cámara (I5) -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Ubicación precisa (GPS) y aproximada (red): se piden antes de buscar la ubicación (I1) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- ===== HARDWARE ===== -->
+    <!-- required="false": la app se instala igual si el teléfono no tiene cámara o GPS -->
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AndroidBasicoApp">
+
+        <!-- Pantalla de inicio -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Activities de los intents explícitos (exported="false": solo nuestra app las abre) -->
+    </application>
+
+</manifest>

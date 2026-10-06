@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pantalla principal. ScrollView: permite bajar si el contenido no cabe en la pantalla. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_pantalla">
+
+        <!-- ===== ENCABEZADO ===== -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/titulo_menu"
+            android:textColor="@color/azul_sede"
+            android:textSize="@dimen/texto_titulo"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/espacio_chico"
+            android:gravity="center"
+            android:text="@string/subtitulo_menu"
+            android:textColor="@color/texto_secundario"
+            android:textSize="@dimen/texto_normal" />
+
+        <!-- Leyenda: explica al usuario qué significa cada color de botón -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/espacio_chico"
+            android:gravity="center"
+            android:text="@string/leyenda_colores"
+            android:textColor="@color/texto_secundario"
+            android:textSize="@dimen/texto_chico" />
+
+        <!-- ===== INTENTS IMPLÍCITOS (abren otras apps o el hardware) ===== -->
+        <TextView
+            style="@style/TituloSeccion"
+            android:text="@string/seccion_implicitos" />
+
+        <!-- Sensor de ubicación: obtiene latitud y longitud para I1 (amarillo: pide permiso) -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnUbicacion"
+            style="@style/Boton.Amarillo"
+            android:text="@string/btn_ubicacion" />
+
+        <TextView
+            android:id="@+id/tvUbicacion"
+            style="@style/TextoTarjeta"
+            android:text="@string/txt_ubicacion_inicial" />
+
+        <!-- I1: Google Maps -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnMapa"
+            style="@style/Boton.Verde"
+            android:text="@string/btn_mapa" />
+
+        <!-- I2: Sitio web -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnWeb"
+            style="@style/Boton.Verde"
+            android:text="@string/btn_web" />
+
+        <!-- I3: Marcador telefónico -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnLlamar"
+            style="@style/Boton.Verde"
+            android:text="@string/btn_llamar" />
+
+        <!-- I4: Correo electrónico -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCorreo"
+            style="@style/Boton.Verde"
+            android:text="@string/btn_correo" />
+
+        <!-- I5: Cámara (amarillo: pide permiso) -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCamara"
+            style="@style/Boton.Amarillo"
+            android:text="@string/btn_camara" />
+
+        <!-- Se ve mientras el Thread prepara la vista previa de la foto -->
+        <ProgressBar
+            android:id="@+id/pbFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imgFoto"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/alto_foto"
+            android:layout_marginBottom="@dimen/espacio_boton"
+            android:contentDescription="@string/desc_foto"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <!-- ===== INTENTS EXPLÍCITOS (pantallas de la propia app) ===== -->
+        <TextView
+            style="@style/TituloSeccion"
+            android:text="@string/seccion_explicitos" />
+
+        <!-- E1: Detalle con datos extra -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDetalle"
+            style="@style/Boton.Azul"
+            android:text="@string/btn_detalle" />
+
+        <!-- E2: Ajustes -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnConfig"
+            style="@style/Boton.Gris"
+            android:text="@string/btn_config" />
+
+        <!-- ===== FORMULARIO → E3: Confirmación con resultado ===== -->
+        <TextView
+            style="@style/TituloSeccion"
+            android:text="@string/seccion_formulario" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNombre"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/espacio_boton"
+            android:hint="@string/hint_nombre"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCorreo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/espacio_boton"
+            android:hint="@string/hint_correo"
+            app:startIconDrawable="@android:drawable/ic_dialog_email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnEnviar"
+            style="@style/Boton.Verde"
+            android:text="@string/btn_enviar" />
+
+        <TextView
+            android:id="@+id/tvEstadoInscripcion"
+            style="@style/TextoTarjeta"
+            android:text="@string/txt_estado_inicial" />
+
+    </LinearLayout>
+</ScrollView>

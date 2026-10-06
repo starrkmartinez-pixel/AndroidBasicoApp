@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Colores de AndroidBasicoApp. Cada color de botón tiene un significado para el usuario. -->
+<resources>
+    <!-- Identidad de la app -->
+    <color name="azul_sede">#FF1565C0</color>
+    <color name="azul_oscuro">#FF0D47A1</color>
+
+    <!-- Significado de los botones -->
+    <color name="verde">#FF2E7D32</color>     <!-- acción segura: abre otra app o confirma -->
+    <color name="amarillo">#FFF9A825</color>  <!-- cuidado: la acción pedirá un permiso -->
+    <color name="rojo">#FFC62828</color>      <!-- peligro: cancela o descarta -->
+    <color name="azul">#FF1976D2</color>      <!-- navega a otra pantalla de la app -->
+    <color name="gris">#FF546E7A</color>      <!-- acción secundaria: ajustes, volver -->
+
+    <!-- Fondos y textos -->
+    <color name="fondo">#FFF4F6F8</color>
+    <color name="tarjeta">#FFFFFFFF</color>
+    <color name="blanco">#FFFFFFFF</color>
+    <color name="texto_oscuro">#FF212121</color>
+    <color name="texto_secundario">#FF616161</color>
+</resources>

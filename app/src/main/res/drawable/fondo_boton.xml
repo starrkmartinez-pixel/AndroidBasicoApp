@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Forma de todos los botones: rectángulo con esquinas redondeadas.
+     El color lo pone cada estilo con backgroundTint (ver themes.xml). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/blanco" />
+    <corners android:radius="@dimen/radio_boton" />
+</shape>

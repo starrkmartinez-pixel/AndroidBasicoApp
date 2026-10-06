@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Medidas de AndroidBasicoApp: dp para tamaños y márgenes, sp para el tamaño de letra. -->
+<resources>
+    <dimen name="padding_pantalla">20dp</dimen>
+    <dimen name="padding_boton">14dp</dimen>
+    <dimen name="padding_tarjeta">12dp</dimen>
+    <dimen name="espacio_boton">10dp</dimen>
+    <dimen name="espacio_seccion">20dp</dimen>
+    <dimen name="espacio_chico">6dp</dimen>
+    <dimen name="radio_boton">12dp</dimen>
+    <dimen name="alto_foto">220dp</dimen>
+
+    <dimen name="texto_titulo">28sp</dimen>
+    <dimen name="texto_seccion">18sp</dimen>
+    <dimen name="texto_boton">16sp</dimen>
+    <dimen name="texto_normal">15sp</dimen>
+    <dimen name="texto_chico">13sp</dimen>
+</resources>
