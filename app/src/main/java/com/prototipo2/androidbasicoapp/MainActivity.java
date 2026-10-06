@@ -298,11 +298,15 @@ public class MainActivity extends AppCompatActivity {
     // 7. INTENTS EXPLÍCITOS (navegan a pantallas de nuestra propia app)
     // =====================================================================
     private Button btnDetalle;
+    private Button btnConfig;
 
     private void configurarIntentsExplicitos() {
         btnDetalle = findViewById(R.id.btnDetalle);
+        btnConfig = findViewById(R.id.btnConfig);
 
         btnDetalle.setOnClickListener(v -> abrirDetalle());  // E1
+        // E2 — MainActivity → ConfigActivity (la clase destino se indica con .class)
+        btnConfig.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ConfigActivity.class)));
     }
 
     // E1 — MainActivity → DetalleActivity enviando datos con putExtra

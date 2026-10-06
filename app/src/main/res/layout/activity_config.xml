@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pantalla de Ajustes (destino del intent explícito 2) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Toolbar propia: el tema de la app no tiene barra (NoActionBar).
+         El ThemeOverlay oscuro deja el título y la flecha en blanco. -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/azul_sede"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_pantalla">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/swNotificaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sw_notificaciones"
+            android:textColor="@color/texto_oscuro"
+            android:textSize="@dimen/texto_boton" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/espacio_boton"
+            android:text="@string/txt_config_info"
+            android:textColor="@color/texto_secundario"
+            android:textSize="@dimen/texto_chico" />
+    </LinearLayout>
+
+</LinearLayout>
