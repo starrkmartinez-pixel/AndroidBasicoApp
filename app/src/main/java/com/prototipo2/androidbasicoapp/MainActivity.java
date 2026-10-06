@@ -297,8 +297,21 @@ public class MainActivity extends AppCompatActivity {
     // =====================================================================
     // 7. INTENTS EXPLÍCITOS (navegan a pantallas de nuestra propia app)
     // =====================================================================
+    private Button btnDetalle;
+
     private void configurarIntentsExplicitos() {
-        // Aquí se conectarán los botones de Detalle, Ajustes e Inscripción (E1 a E3)
+        btnDetalle = findViewById(R.id.btnDetalle);
+
+        btnDetalle.setOnClickListener(v -> abrirDetalle());  // E1
+    }
+
+    // E1 — MainActivity → DetalleActivity enviando datos con putExtra
+    private void abrirDetalle() {
+        Intent intent = new Intent(MainActivity.this, DetalleActivity.class);
+        intent.putExtra(DetalleActivity.EXTRA_TITULO, getString(R.string.detalle_biblioteca_titulo));
+        intent.putExtra(DetalleActivity.EXTRA_DESCRIPCION, getString(R.string.detalle_biblioteca_descripcion));
+        intent.putExtra(DetalleActivity.EXTRA_CAPACIDAD, 120);
+        startActivity(intent);
     }
 
     // =====================================================================
