@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Patterns;
 import android.util.Size;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +34,8 @@ import androidx.core.location.LocationManagerCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.IOException;
 
@@ -299,14 +302,41 @@ public class MainActivity extends AppCompatActivity {
     // =====================================================================
     private Button btnDetalle;
     private Button btnConfig;
+    private Button btnEnviar;
+    private TextInputLayout tilNombre, tilCorreo;
+    private TextInputEditText etNombre, etCorreo;
+    private TextView tvEstadoInscripcion;
+
+    // E3: espera la respuesta de ConfirmActivity (OK = confirmó; CANCELED = canceló o volvió atrás)
+    private final ActivityResultLauncher<Intent> lanzadorConfirmacion = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            resultado -> {
+                if (resultado.getResultCode() == RESULT_OK) {
+                    Intent datos = resultado.getData();  // validación: la respuesta puede venir sin datos
+                    String hora = (datos != null) ? datos.getStringExtra(ConfirmActivity.EXTRA_HORA) : null;
+                    tvEstadoInscripcion.setText(getString(R.string.txt_inscripcion_ok,
+                            hora != null ? hora : "--:--"));
+                    etNombre.setText("");
+                    etCorreo.setText("");
+                } else {
+                    tvEstadoInscripcion.setText(R.string.txt_inscripcion_cancelada);
+                }
+            });
 
     private void configurarIntentsExplicitos() {
         btnDetalle = findViewById(R.id.btnDetalle);
         btnConfig = findViewById(R.id.btnConfig);
+        btnEnviar = findViewById(R.id.btnEnviar);
+        tilNombre = findViewById(R.id.tilNombre);
+        tilCorreo = findViewById(R.id.tilCorreo);
+        etNombre = findViewById(R.id.etNombre);
+        etCorreo = findViewById(R.id.etCorreo);
+        tvEstadoInscripcion = findViewById(R.id.tvEstadoInscripcion);
 
         btnDetalle.setOnClickListener(v -> abrirDetalle());  // E1
         // E2 — MainActivity → ConfigActivity (la clase destino se indica con .class)
         btnConfig.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ConfigActivity.class)));
+        btnEnviar.setOnClickListener(v -> enviarInscripcion());  // E3
     }
 
     // E1 — MainActivity → DetalleActivity enviando datos con putExtra
@@ -316,6 +346,26 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(DetalleActivity.EXTRA_DESCRIPCION, getString(R.string.detalle_biblioteca_descripcion));
         intent.putExtra(DetalleActivity.EXTRA_CAPACIDAD, 120);
         startActivity(intent);
+    }
+
+    // E3 — Valida el formulario y abre ConfirmActivity esperando su respuesta
+    private void enviarInscripcion() {
+        String nombre = leerTexto(etNombre);
+        String correo = leerTexto(etCorreo);
+        // Validaciones: setError muestra el mensaje en rojo bajo el campo (null lo borra)
+        tilNombre.setError(nombre.length() < 3 ? getString(R.string.error_nombre) : null);
+        tilCorreo.setError(Patterns.EMAIL_ADDRESS.matcher(correo).matches() ? null : getString(R.string.error_correo));
+        if (tilNombre.getError() != null || tilCorreo.getError() != null) return;  // no navegamos con datos malos
+
+        Intent intent = new Intent(MainActivity.this, ConfirmActivity.class);
+        intent.putExtra(ConfirmActivity.EXTRA_NOMBRE, nombre);
+        intent.putExtra(ConfirmActivity.EXTRA_CORREO, correo);
+        lanzadorConfirmacion.launch(intent);  // launch y no startActivity: esperamos una respuesta
+    }
+
+    // Validación de null: getText() puede devolver null
+    private String leerTexto(TextInputEditText campo) {
+        return campo.getText() == null ? "" : campo.getText().toString().trim();
     }
 
     // =====================================================================

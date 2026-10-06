@@ -15,4 +15,15 @@
     <string name="txt_config_info">Los ajustes se guardan en el teléfono y se mantienen al volver a abrir la app.</string>
     <string name="msg_notificaciones_on">🔔 Avisos activados</string>
     <string name="msg_notificaciones_off">🔕 Avisos desactivados</string>
+
+    <!-- ===== E3: Inscripción y confirmación ===== -->
+    <string name="titulo_confirm">✅ Confirma tu inscripción</string>
+    <string name="txt_resumen">👤 %1$s\n✉️ %2$s</string>
+    <string name="btn_confirmar">✅ Confirmar</string>
+    <string name="btn_cancelar">❌ Cancelar</string>
+    <string name="txt_inscripcion_ok">✅ Inscripción confirmada a las %1$s</string>
+    <string name="txt_inscripcion_cancelada">❌ Inscripción cancelada: puedes corregir tus datos</string>
+    <string name="error_nombre">Ingresa tu nombre (mínimo 3 letras)</string>
+    <string name="error_correo">Correo no válido (ej: nombre@correo.cl)</string>
+    <string name="msg_faltan_datos">Faltan datos de la inscripción</string>
 </resources>
