@@ -1,9 +1,14 @@
 package com.prototipo2.androidbasicoapp;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -11,8 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.location.LocationManagerCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -36,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     // =====================================================================
     // 1. CONSTANTES (static final: una sola copia para la clase y no cambian)
     // =====================================================================
+    private static final int PERMISO_UBICACION = 100;  // código para reconocer la respuesta del permiso de ubicación
+    private static final String SEDE = "Santo Tomás Santiago Centro";  // lo que busca Maps si no hay ubicación
     private static final String URL_SITIO = "https://www.santotomas.cl";
     private static final String TELEFONO = "+56200000000";          // número de ejemplo
     private static final String CORREO = "contacto@ejemplo.cl";     // correo de ejemplo
@@ -48,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgFoto;
     private ProgressBar pbFoto;
 
+    // =====================================================================
+    // 3. ESTADO (valores que cambian mientras se usa la app)
+    // =====================================================================
+    private LocationManager locationManager;  // servicio del sistema que entrega la ubicación
+    private double latitud, longitud;          // double primitivo: guarda el valor directo
+    private boolean ubicacionObtenida = false; // evita abrir el mapa con coordenadas vacías
 
     // =====================================================================
     // 4. CICLO DE VIDA
@@ -74,8 +91,11 @@ public class MainActivity extends AppCompatActivity {
         tvUbicacion = findViewById(R.id.tvUbicacion);
         imgFoto = findViewById(R.id.imgFoto);
         pbFoto = findViewById(R.id.pbFoto);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         // Eventos de los intents implícitos
+        btnUbicacion.setOnClickListener(v -> pedirUbicacion());
+        btnMapa.setOnClickListener(v -> abrirMapa());          // I1
         btnWeb.setOnClickListener(v -> abrirSitioWeb());       // I2
         btnLlamar.setOnClickListener(v -> abrirMarcador());    // I3
         btnCorreo.setOnClickListener(v -> enviarCorreo());     // I4
@@ -87,6 +107,65 @@ public class MainActivity extends AppCompatActivity {
     // =====================================================================
     // 5. INTENTS IMPLÍCITOS (Android elige qué app externa responde)
     // =====================================================================
+
+    // Sensor de ubicación: primero revisa el permiso; si no está, lo pide con el código 100
+    private void pedirUbicacion() {
+        if (tienePermiso(Manifest.permission.ACCESS_FINE_LOCATION)
+                || tienePermiso(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            obtenerUbicacion();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISO_UBICACION);
+        }
+    }
+
+    // Pide UNA lectura al sensor. Llega en segundo plano y el resultado vuelve al hilo principal.
+    private void obtenerUbicacion() {
+        if (locationManager == null || !LocationManagerCompat.isLocationEnabled(locationManager)) {
+            mostrarMensaje(R.string.msg_activa_gps);  // validación: GPS apagado
+            return;
+        }
+        tvUbicacion.setText(R.string.txt_buscando_ubicacion);
+        // Android 12+: el proveedor "fused" combina GPS, Wi-Fi y red. Antes: red si está activa, si no GPS.
+        String proveedor;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                && locationManager.hasProvider(LocationManager.FUSED_PROVIDER)) {
+            proveedor = LocationManager.FUSED_PROVIDER;
+        } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            proveedor = LocationManager.NETWORK_PROVIDER;
+        } else {
+            proveedor = LocationManager.GPS_PROVIDER;
+        }
+        try {
+            LocationManagerCompat.getCurrentLocation(locationManager, proveedor, new CancellationSignal(),
+                    ContextCompat.getMainExecutor(this), ubicacion -> {
+                        if (ubicacion == null) {  // validación: el sensor no encontró señal
+                            tvUbicacion.setText(R.string.txt_ubicacion_no_encontrada);
+                            return;
+                        }
+                        latitud = ubicacion.getLatitude();
+                        longitud = ubicacion.getLongitude();
+                        ubicacionObtenida = true;
+                        tvUbicacion.setText(getString(R.string.txt_ubicacion, latitud, longitud));
+                    });
+        } catch (SecurityException e) {  // el permiso se quitó desde Ajustes mientras la app estaba abierta
+            tvUbicacion.setText(R.string.txt_sin_permiso_ubicacion);
+        }
+    }
+
+    // I1 — Google Maps con geo: (si no hay ubicación, busca la sede por nombre)
+    private void abrirMapa() {
+        String geo;
+        if (ubicacionObtenida) {
+            // Unir texto + double siempre usa punto decimal (geo: no acepta coma)
+            geo = "geo:" + latitud + "," + longitud + "?q=" + latitud + "," + longitud;
+        } else {
+            geo = "geo:0,0?q=" + Uri.encode(SEDE);
+            mostrarMensaje(R.string.msg_mapa_sede);
+        }
+        abrirIntentSeguro(new Intent(Intent.ACTION_VIEW, Uri.parse(geo)), R.string.error_sin_mapas);
+    }
 
     // I2 — Sitio web: ACTION_VIEW + https:// abre el navegador
     private void abrirSitioWeb() {
@@ -110,6 +189,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // =====================================================================
+    // 6. RESPUESTA DE LOS PERMISOS (el usuario tocó "Permitir" o "No permitir")
+    // =====================================================================
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISO_UBICACION) {
+            if (tienePermiso(Manifest.permission.ACCESS_FINE_LOCATION)
+                    || tienePermiso(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                obtenerUbicacion();
+            } else {
+                tvUbicacion.setText(R.string.txt_sin_permiso_ubicacion);
+            }
+        }
+    }
+
+    // =====================================================================
     // 7. INTENTS EXPLÍCITOS (navegan a pantallas de nuestra propia app)
     // =====================================================================
     private void configurarIntentsExplicitos() {
@@ -126,6 +222,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
             mostrarMensaje(mensajeError);
         }
+    }
+
+    private boolean tienePermiso(String permiso) {
+        return ContextCompat.checkSelfPermission(this, permiso) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void mostrarMensaje(int idTexto) {
