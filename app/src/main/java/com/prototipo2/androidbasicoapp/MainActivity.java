@@ -2,13 +2,19 @@ package com.prototipo2.androidbasicoapp;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Size;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -16,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -26,6 +34,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 
+import java.io.IOException;
 
 /*
  * =====================================================================
@@ -46,10 +55,12 @@ public class MainActivity extends AppCompatActivity {
     // 1. CONSTANTES (static final: una sola copia para la clase y no cambian)
     // =====================================================================
     private static final int PERMISO_UBICACION = 100;  // código para reconocer la respuesta del permiso de ubicación
+    private static final int PERMISO_CAMARA = 200;     // código para reconocer la respuesta del permiso de cámara
     private static final String SEDE = "Santo Tomás Santiago Centro";  // lo que busca Maps si no hay ubicación
     private static final String URL_SITIO = "https://www.santotomas.cl";
     private static final String TELEFONO = "+56200000000";          // número de ejemplo
     private static final String CORREO = "contacto@ejemplo.cl";     // correo de ejemplo
+    private static final String CARPETA_FOTOS = "AndroidBasicoApp";        // subcarpeta dentro de Imágenes
 
     // =====================================================================
     // 2. VISTAS (encapsuladas como private)
@@ -65,6 +76,22 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;  // servicio del sistema que entrega la ubicación
     private double latitud, longitud;          // double primitivo: guarda el valor directo
     private boolean ubicacionObtenida = false; // evita abrir el mapa con coordenadas vacías
+    private Uri uriFoto;                       // dónde la cámara guarda la foto (null = no hay foto en curso)
+
+    // Espera el resultado de la cámara. Se registra como atributo, nunca dentro de un clic.
+    private final ActivityResultLauncher<Intent> lanzadorCamara = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            resultado -> {
+                if (resultado.getResultCode() == RESULT_OK && uriFoto != null) {
+                    mostrarVistaPrevia(uriFoto);
+                    mostrarMensaje(R.string.msg_foto_guardada);
+                } else {
+                    // Validación: si se canceló, borramos el archivo vacío que reservamos en la galería
+                    if (uriFoto != null) getContentResolver().delete(uriFoto, null, null);
+                    mostrarMensaje(R.string.msg_foto_cancelada);
+                }
+                uriFoto = null;
+            });
 
     // =====================================================================
     // 4. CICLO DE VIDA
@@ -99,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         btnWeb.setOnClickListener(v -> abrirSitioWeb());       // I2
         btnLlamar.setOnClickListener(v -> abrirMarcador());    // I3
         btnCorreo.setOnClickListener(v -> enviarCorreo());     // I4
+        btnCamara.setOnClickListener(v -> pedirCamara());      // I5
 
         // Eventos de los intents explícitos (sección 7)
         configurarIntentsExplicitos();
@@ -188,6 +216,61 @@ public class MainActivity extends AppCompatActivity {
         abrirIntentSeguro(intent, R.string.error_sin_correo);
     }
 
+    // I5 — Cámara: revisa el permiso; si no está, lo pide con el código 200
+    private void pedirCamara() {
+        if (tienePermiso(Manifest.permission.CAMERA)) {
+            abrirCamara();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, PERMISO_CAMARA);
+        }
+    }
+
+    // Reserva un archivo en la galería (Imágenes/AndroidBasicoApp) y le pide a la cámara que guarde ahí la foto
+    private void abrirCamara() {
+        ContentValues datos = new ContentValues();
+        datos.put(MediaStore.Images.Media.DISPLAY_NAME, "AndroidBasicoApp_" + System.currentTimeMillis() + ".jpg");
+        datos.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        datos.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/" + CARPETA_FOTOS);
+        uriFoto = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, datos);
+        if (uriFoto == null) {  // validación: no se pudo crear el archivo
+            mostrarMensaje(R.string.error_preparar_foto);
+            return;
+        }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriFoto);
+        try {
+            lanzadorCamara.launch(intent);  // launch: esperamos el resultado (OK o cancelado)
+        } catch (ActivityNotFoundException e) {
+            getContentResolver().delete(uriFoto, null, null);
+            uriFoto = null;
+            mostrarMensaje(R.string.error_sin_camara);
+        }
+    }
+
+    // THREAD: hacer la miniatura de una foto de varios MB tarda; en el hilo principal congelaría la pantalla
+    private void mostrarVistaPrevia(Uri uri) {
+        pbFoto.setVisibility(View.VISIBLE);
+        new Thread(() -> {
+            Bitmap miniatura = null;
+            try {
+                miniatura = getContentResolver().loadThumbnail(uri, new Size(800, 800), null);
+            } catch (IOException e) {
+                // se queda en null y se avisa abajo
+            }
+            Bitmap resultado = miniatura;  // las lambdas solo pueden usar variables que no cambian
+            runOnUiThread(() -> {          // solo el hilo principal puede modificar las vistas
+                pbFoto.setVisibility(View.GONE);
+                if (resultado == null) {
+                    mostrarMensaje(R.string.error_vista_previa);
+                    return;
+                }
+                imgFoto.setImageBitmap(resultado);
+                imgFoto.setVisibility(View.VISIBLE);
+            });
+        }).start();  // start() crea el hilo nuevo; run() lo ejecutaría en el hilo principal
+    }
+
     // =====================================================================
     // 6. RESPUESTA DE LOS PERMISOS (el usuario tocó "Permitir" o "No permitir")
     // =====================================================================
@@ -201,6 +284,12 @@ public class MainActivity extends AppCompatActivity {
                 obtenerUbicacion();
             } else {
                 tvUbicacion.setText(R.string.txt_sin_permiso_ubicacion);
+            }
+        } else if (requestCode == PERMISO_CAMARA) {
+            if (tienePermiso(Manifest.permission.CAMERA)) {
+                abrirCamara();
+            } else {
+                mostrarMensaje(R.string.msg_sin_permiso_camara);
             }
         }
     }
