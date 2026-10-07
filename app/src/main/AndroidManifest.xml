@@ -38,6 +38,9 @@
         </activity>
 
         <!-- Activities de los intents explícitos (exported="false": solo nuestra app las abre) -->
+        <activity android:name=".DetalleActivity" android:exported="false" />
+        <activity android:name=".ConfigActivity" android:exported="false" />
+        <activity android:name=".ConfirmActivity" android:exported="false" />
     </application>
 
 </manifest>

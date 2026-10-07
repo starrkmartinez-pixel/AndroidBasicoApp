@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pantalla de Detalle (destino del intent explícito 1).
+     "main" recibe el espacio de las barras del sistema; el margen va en el contenedor interno. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_pantalla">
+
+    <!-- Mientras el Thread "carga", el título muestra "Cargando…" -->
+    <TextView
+        android:id="@+id/tvTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/espacio_seccion"
+        android:gravity="center"
+        android:text="@string/txt_cargando"
+        android:textColor="@color/azul_sede"
+        android:textSize="@dimen/texto_titulo"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/pbCarga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/espacio_seccion"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvDescripcion"
+        style="@style/TextoTarjeta"
+        android:layout_marginTop="@dimen/espacio_seccion" />
+
+    <TextView
+        android:id="@+id/tvCapacidad"
+        style="@style/TextoTarjeta" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnVolver"
+        style="@style/Boton.Gris"
+        android:layout_marginTop="@dimen/espacio_seccion"
+        android:text="@string/btn_volver" />
+
+</LinearLayout>
+</FrameLayout>
